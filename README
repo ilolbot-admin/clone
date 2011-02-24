@@ -1,0 +1,10 @@
+CONFIGURATION
+=============
+To edit the admin password, change the value of $adminpass in scripts/login.php
+
+The database structure is located in database.sql
+To change the database settings, edit database.php
+
+NOTES
+=====
+cron.php has not been tested, use at your own risk!

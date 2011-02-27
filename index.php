@@ -202,7 +202,7 @@ body{
 	<div id="divloginwrapper">
 		<center>
 			<div id="divlogin">
-				<b>All U.S. laws apply.</b><br><del>Broken in Firefox, sorry</del> Temporary fix in place<br><a style="font-size:0.65em;">Optimized for Chromium. Tested on IE 8, FF and Chrome.</a><br><br><br>
+				<h2>All U.S. laws apply.</h2><br>
 				Username:&nbsp;<input type="text" id="username" maxlength="15" style="border:0;background-color: #333;color: #BBB">&nbsp;
 				<input type="button" value="Ok" class="button" onClick="login();">
 			</div>

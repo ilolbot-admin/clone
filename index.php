@@ -206,7 +206,7 @@ body{
 	<div id="divloginwrapper">
 		<center>
 			<div id="divlogin">
-				<a style="font-size:1.5em;"><b>All U.S. laws apply.</b></a><br><a href="https://github.com/ilolbot-admin/clone/" class="link">Source</a><br><br>
+				<a style="font-size:1.5em;">All U.S. laws apply.</a><br><a href="https://github.com/ilolbot-admin/clone/" class="link">Source</a><br><br>
 				Username:&nbsp;<input type="text" id="username" maxlength="15" style="border:0;background-color: #333;color: #BBB">&nbsp;
 				<input type="button" value="Ok" class="button" onClick="login();">
 			</div>

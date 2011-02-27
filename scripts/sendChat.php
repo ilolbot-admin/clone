@@ -84,10 +84,10 @@ if(isset($_SESSION['user_name']))
 				if($types) {
 					if(!file_exists("images/" . $file_title)) {
 						if(in_array($ext,$all_types)){
-							move_uploaded_file($_FILES['file']['tmp_name'], $uploadfile);
-							sleep(1);
+							move_uploaded_file($_FILES['file']['tmp_name'], $uploadfile)or die('<script type="text/javascript">alert("LOL!");</script>');
+							//sleep(1);
 							createthumb("images/".$file_title,"thumbs/".$file_title,100,100);
-							sleep(1);
+							//sleep(1);
 							mysql_query("INSERT INTO message (user_name, chat_message, image, user_ip, time_sent) VALUES ('$user_name', '$chat_message', '$file_title', '$user_ip', '$time_sent')") or die('<script type="text/javascript">alert("'. mysql_error() .' LOL!");</script>');
 						}
 						else

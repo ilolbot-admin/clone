@@ -14,7 +14,7 @@ a.link:hover {color:#FFF;}
 a.link:active {color:#FFF;}
 body{
 	color: #BBB;
-	font-size: 12px;
+	font-size: 100%;
 	font-family: Arial;
 	background-color: #333;
 	/*overflow: hidden;*/
@@ -25,6 +25,9 @@ body{
 	-moz-border-radius: 15px;
 	border-radius: 15px;
 	padding:25px;
+}
+#container{
+	font-size:0.875em;
 }
 .button {
   color: #BBB;
@@ -199,10 +202,11 @@ body{
 
 <body onload="initUpload();document.getElementById('username').focus();">
 	
+	<div id="container">
 	<div id="divloginwrapper">
 		<center>
 			<div id="divlogin">
-				<h2>All U.S. laws apply.</h2><br>
+				<a style="font-size:1.5em;"><b>All U.S. laws apply.</b></a><br><a href="https://github.com/ilolbot-admin/clone/" class="link">Source</a><br><br>
 				Username:&nbsp;<input type="text" id="username" maxlength="15" style="border:0;background-color: #333;color: #BBB">&nbsp;
 				<input type="button" value="Ok" class="button" onClick="login();">
 			</div>
@@ -225,6 +229,7 @@ body{
 		<center>
 			<div id="divmessages"></div>
 		</center>
+	</div>
 	</div>
 </body>
 </html>

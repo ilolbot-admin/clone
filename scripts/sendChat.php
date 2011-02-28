@@ -3,18 +3,23 @@ session_start();
 require('database.php');
 require('thumbs.php');
 
-//$_SESSION['user_name'] = "LOL";
-
 function fatalError($error)
 {
 	die('<script type="text/javascript">alert("Error: '. $error .'.");</script>');
 }
 
+$user_name = $_SESSION['user_name'];
+$user_name = mysql_real_escape_string($user_name);
+$chat_message = $_POST['chat_message'];
+$user_ip = $_SERVER['REMOTE_ADDR'];
+$time_sent = date("Y-m-d H:i:s");
 
+$file_uploaded = $_FILES['file']['name'];
 
 if(isset($_SESSION['user_name']))
 {
 	$error = "";
+	$ban = false;
 
 	$query = mysql_query("SELECT * FROM banned WHERE user_ip='$user_ip'");
 	if(mysql_fetch_assoc($query) > 0) //Check if user is banned
@@ -22,16 +27,7 @@ if(isset($_SESSION['user_name']))
 
 
 	if($ban == false) {
-		$user_name = $_SESSION['user_name'];
-		$user_name = mysql_real_escape_string($user_name);
-		$chat_message = $_POST['chat_message'];
-		$user_ip = $_SERVER['REMOTE_ADDR'];
-		$time_sent = date("Y-m-d H:i:s");
-		
-		$file_uploaded = $_FILES['file']['name'];
-
-	
-		$i=0;
+		$i = 0;
 		$spam = 0;
 		$post_array=array();
 
@@ -48,7 +44,7 @@ if(isset($_SESSION['user_name']))
 
 			similar_text($Post_new, $Post_old, $sim);
 
-			if($sim>75) { //iIf they are the same
+			if($sim>75) { //if they are the same
 				$spam+=1;
 				if($spam>3) {
 					mysql_query("INSERT INTO banned (user_ip) VALUES ('$user_ip')");
@@ -57,7 +53,6 @@ if(isset($_SESSION['user_name']))
 			}
 			$i+=1;
 		}
-
 
 
 		if(!((strlen($chat_message) > 1000) || (strlen($chat_message) == 0))) {
@@ -109,7 +104,7 @@ if(isset($_SESSION['user_name']))
 
 	}
 	else
-		$error = "You have been muted.";
+		$error = "You have been muted";
 }
 else
 	$error = "Your session has expired, please refresh the page";

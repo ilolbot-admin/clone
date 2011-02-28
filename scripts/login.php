@@ -1,7 +1,6 @@
 <?php
 session_start();
-
-$adminpass = "password";//make it complexe, must be no longer than 15 characters
+require('config.php');//for $adminpass
 
 
 $username = $_POST['username'];

@@ -56,8 +56,9 @@ body{
 	
 	var lastMessageId = 0;
 	
+	var timer;
+	
 	function getXmlHttpRequestObject(){if(window.XMLHttpRequest)return new XMLHttpRequest();else if(window.ActiveXObject)return new ActiveXObject("Microsoft.XMLHTTP");else{alert('Cound not create XmlHttpRequest Object. Please consider upgrading your browser.');return null;}}
-
 	function login() {
 		document.getElementById('divloginwrapper').style.display = "none";
 		document.getElementById('divchat').style.display = "inline";
@@ -85,13 +86,11 @@ body{
 		receiveReq.onreadystatechange=handleGetChat;
 		receiveReq.send(null);
 	}
-	
 	function sortAsc(x,y){
 		var xId=parseInt(x.getAttribute('id'));
 		var yId=parseInt(y.getAttribute('id'));
 		return yId-xId;
 	}
-	
 	function createOut(list, admin)
 	{
 		var nMessages = list.length;
@@ -120,25 +119,23 @@ body{
 		}
 		return out;
 	}
-
 	function handleGetChat()
 	{
-		if (receiveReq.readyState==4)
-		{
-			
+		if (receiveReq.readyState==4){
 			var xmldoc=receiveReq.responseXML;//put xml into var
 			
-			
-			if(xmldoc == null){//no new messages !!!!!!! IMPORTANT DOESENT WORK ON FIREFOX CAUSES CRASHES
-				setTimeout('getChatText();',3000);
+			if(xmldoc == null) {
+				//no new messages in all browser but firefox!
+				timer=setTimeout('getChatText();',3000);
 				return;
 			}
-			
-			try {//temp fix for firefox's faggotry
+			try {
+				//temp fix for firefox's faggotry
 				var admin = xmldoc.getElementsByTagName("adm")[0].firstChild.nodeValue;
 			}
 			catch(err) {
-				setTimeout('getChatText();',3000);
+				//no new messages in firefox
+				timer=setTimeout('getChatText();',3000);
 				return;
 			}
 
@@ -157,10 +154,8 @@ body{
 			var out = createOut(list, admin);
 
 			divmsg.innerHTML = out + divmsg.innerHTML;
-			setTimeout('getChatText();',3000);
+			timer=setTimeout('getChatText();',3000);
 		}
-
-
 	}
 	function online()
 	{
@@ -192,11 +187,24 @@ body{
 			setTimeout('online();',4000);
 		}
 	}
-	function initUpload() {
-		document.getElementById('file_upload_form').onsubmit=function() {
+	function initUpload()
+	{
+		document.getElementById('file_upload_form').onsubmit = function()
+		{
 			document.getElementById('file_upload_form').target = 'upload_target'; //'upload_target' is the name of the iframe
 		}
 	}
+	function refreshPosts()
+	{
+		//reset everything
+		clearTimeout(timer);
+		lastMessageId = 0;
+		document.getElementById('divmessages').innerHTML = "";
+		
+		//load messages
+		getChatText();
+	}
+		
 </script>
 </head>
 
@@ -214,7 +222,10 @@ body{
 	</div>
 	
 	<div id="divchat" style="display:none">
-		<div id="divonline" style="float: right; text-align: right;"></div>
+		<div style="float: right; text-align: right;display:inline;">
+		<input type="button" value="Refresh" class="button" onclick="refreshPosts()"/><br><br>
+		<div id="divonline"></div>
+		</div>
 		
 		<div id="divsend">
 			<form id="file_upload_form" method="post" enctype="multipart/form-data" action="scripts/sendChat.php">

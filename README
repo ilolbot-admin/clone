@@ -1,9 +1,7 @@
 CONFIGURATION
 =============
-To edit the admin password, change the value of $adminpass in scripts/config.php
-
+You may change the database and admin password settings in scripts/config.php
 The database structure is located in scripts/database.sql
-To change the database settings, edit scripts/database.php
 
 NOTES
 =====

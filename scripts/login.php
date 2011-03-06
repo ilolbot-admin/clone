@@ -7,7 +7,7 @@ $username = $_POST['username'];
 
 if($username == $adminpass) {
 	$_SESSION['admin'] = true;
-	$_SESSION['user_name'] = "<b><a style='color:#363'>Admin</a></b>";
+	$_SESSION['user_name'] = "<b><span style='color:#363'>Admin</a></b>";
 }
 else if(strlen($username) > 15 || strlen($username) == 0) {
 	$_SESSION['admin'] = false;

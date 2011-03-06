@@ -55,7 +55,9 @@ if(isset($_SESSION['user_name']))
 		}
 
 
-		if(!((strlen($chat_message) > 1000) || (strlen($chat_message) == 0))) {
+		if(strlen($chat_message) != 0) {
+			if(strlen($chat_message) > 1000 || substr_count ($chat_message, "\n") > 20)
+				fatalError("Message is too long");
 			$chat_message = htmlentities($chat_message);
 			$chat_message = str_replace("\n", "<br>", $chat_message);
 			

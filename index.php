@@ -56,7 +56,8 @@ body{
 	
 	var lastMessageId = 0;
 	
-	var timer;
+	var getPostTimer;
+	var onlineTimer;
 	
 	function getXmlHttpRequestObject(){if(window.XMLHttpRequest)return new XMLHttpRequest();else if(window.ActiveXObject)return new ActiveXObject("Microsoft.XMLHTTP");else{alert('Cound not create XmlHttpRequest Object. Please consider upgrading your browser.');return null;}}
 	function login() {
@@ -126,7 +127,7 @@ body{
 			
 			if(xmldoc == null) {
 				//no new messages in all browser but firefox!
-				timer=setTimeout('getChatText();',3000);
+				getPostTimer=setTimeout('getChatText();',3000);
 				return;
 			}
 			try {
@@ -135,7 +136,7 @@ body{
 			}
 			catch(err) {
 				//no new messages in firefox
-				timer=setTimeout('getChatText();',3000);
+				getPostTimer=setTimeout('getChatText();',3000);
 				return;
 			}
 
@@ -154,7 +155,7 @@ body{
 			var out = createOut(list, admin);
 
 			divmsg.innerHTML = out + divmsg.innerHTML;
-			timer=setTimeout('getChatText();',3000);
+			getPostTimer=setTimeout('getChatText();',3000);
 		}
 	}
 	function online()
@@ -169,10 +170,6 @@ body{
 		if (sendOn.readyState==4)
 		{
 			var xmldoc=sendOn.responseXML;
-			if(xmldoc == null) {
-				setTimeout('online();',4000);
-				return;
-			}
 			var names=xmldoc.getElementsByTagName("u");
 			var n_names=names.length;//amount of names
 			
@@ -184,7 +181,7 @@ body{
 			}
 			document.getElementById('divonline').innerHTML=out;
 			
-			setTimeout('online();',4000);
+			onlineTimer = setTimeout('online();',4000);
 		}
 	}
 	function initUpload()
@@ -197,12 +194,16 @@ body{
 	function refreshPosts()
 	{
 		//reset everything
-		clearTimeout(timer);
 		lastMessageId = 0;
+		clearTimeout(getPostTimer);
 		document.getElementById('divmessages').innerHTML = "";
+		
+		clearTimeout(onlineTimer);
+		document.getElementById('divonline').innerHTML = "";
 		
 		//load messages
 		getChatText();
+		online();
 	}
 		
 </script>
@@ -223,7 +224,7 @@ body{
 	
 	<div id="divchat" style="display:none">
 		<div style="float: right; text-align: right;display:inline;">
-		<input type="button" value="Refresh" class="button" onclick="refreshPosts()"/><br><br>
+		<input type="button" value="Force refresh" class="button" onclick="refreshPosts()"/><br><br><br>
 		<div id="divonline"></div>
 		</div>
 		

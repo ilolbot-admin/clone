@@ -1,6 +1,8 @@
 <?php
 ob_start("ob_gzhandler");//compresses page
 session_start();
+
+require('scripts/config.php');//for $captcha
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -205,6 +207,19 @@ body{
 		getChatText();
 		online();
 	}
+	<?php if($captcha == true): ?>
+		function refreshCaptcha()//must wait a bit to allow time for the script to run before we change the code, hence the setTimeout
+		{
+			//if(document.getElementById("upload_target").innerHTML == ""){
+			//	setTimeout('refresh()',1000);
+			//	return;
+			//}/
+
+			document.getElementById("captcha").setAttribute("src", "scripts/image.php");
+			document.getElementById("code").value = "";
+			//document.getElementById("upload_target").innerHTML = ""
+		}
+	<?php endif; ?>
 		
 </script>
 </head>
@@ -232,14 +247,20 @@ body{
 			<form id="file_upload_form" method="post" enctype="multipart/form-data" action="scripts/sendChat.php">
 				<textarea maxlength="1000" rows="10" cols="40" id="textareabox" name="chat_message" style="border:0;background-color: #333;color: #BBB;border: 1px solid #444;overflow:auto;"></textarea><br>
 				<input name="file" id="file" size="27" type="file" /><br>
-				<input type="submit" name="action" value="Post" class="button" /><br>
+				
+				<?php if($captcha == true): ?>
+					<img src="scripts/image.php" style="padding:0;margin:0;" id="captcha"/><br>
+					<input id="code" name="code" type="text" style="background-color: #333;color: #BBB;border: 1px solid #444;overflow:auto;width:18px;height:20px;margin:2px;"/><br>
+				<?php endif; ?>
+				
+				<input type="submit" name="action" value="Post" class="button" onclick="setTimeout('refreshCaptcha()',1000);"/><br>
 				
 				<iframe id="upload_target" name="upload_target" src="" style="width:0;height:0;border:0;"></iframe>
 			</form>
 		</div>
 		
 		<center>
-			<div id="divmessages"></div>
+			<div id="divmessages" style="clear:both"></div>
 		</center>
 	</div>
 	</div>

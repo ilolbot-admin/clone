@@ -15,9 +15,14 @@ $user_ip = $_SERVER['REMOTE_ADDR'];
 $time_sent = date("Y-m-d H:i:s");
 
 $file_uploaded = $_FILES['file']['name'];
-
+   
 if(isset($_SESSION['user_name']))
 {
+	if($captcha == true)
+		if(($_SESSION['code'] != $_POST['code']) && empty($_SESSION['code']) )
+			fatalError("The code you provided is incorrect");
+
+	unset($_SESSION['code']);//so that they can't just remove the javascript that reloads the image
 	$error = "";
 	$ban = false;
 
@@ -54,7 +59,6 @@ if(isset($_SESSION['user_name']))
 			$i+=1;
 		}
 
-
 		if(strlen($chat_message) != 0) {
 			if(strlen($chat_message) > 1000 || substr_count ($chat_message, "\n") > 20)
 				fatalError("Message is too long");
@@ -68,38 +72,39 @@ if(isset($_SESSION['user_name']))
 
 			$chat_message = mysql_real_escape_string($chat_message);
 		}
-			$file_id ="file";
-			if($_FILES[$file_id]['name']) {
-				$types = 'jpg,jpeg,png';
-				$uploaddir = 'images/';
-				
-				$file_title = $_FILES[$file_id]['name'];
-				//Get file extension
-				$ext_arr = split("\.",basename($file_title));
-				$ext = strtolower($ext_arr[count($ext_arr)-1]); //Get the last extension
+		$file_id ="file";
+		if($_FILES[$file_id]['name']) {
+			$types = 'jpg,jpeg,png';
+			$uploaddir = 'images/';
+			
+			$file_title = $_FILES[$file_id]['name'];
+			//Get file extension
+			$ext_arr = split("\.",basename($file_title));
+			$ext = strtolower($ext_arr[count($ext_arr)-1]); //Get the last extension
 
-				$file_title = md5_file($_FILES['file']['tmp_name']) . "." . $ext;//Get unique name
-				$uploadfile = $uploaddir . $file_title;
-				
-				
-				$all_types = explode(",",strtolower($types));
-				if($types) {
-					if(!file_exists("images/" . $file_title)) {
-						if(in_array($ext,$all_types)){
-							move_uploaded_file($_FILES['file']['tmp_name'], $uploadfile)or fatalError("Could not move file");
+			$file_title = md5_file($_FILES['file']['tmp_name']) . "." . $ext;//Get unique name
+			$uploadfile = $uploaddir . $file_title;
+			
+			
+			$all_types = explode(",",strtolower($types));
+			if($types) {
+				if(!file_exists("images/" . $file_title)) {
+					if(in_array($ext,$all_types)){
+						move_uploaded_file($_FILES['file']['tmp_name'], $uploadfile)or fatalError("Could not move file");
 
-							createthumb("images/".$file_title,"thumbs/".$file_title,100,100);
+						createthumb("images/".$file_title,"thumbs/".$file_title,100,100);
 
-							mysql_query("INSERT INTO message (user_name, chat_message, image, user_ip, time_sent) VALUES ('$user_name', '$chat_message', '$file_title', '$user_ip', '$time_sent')") or fatalError("Database error");
-						}
-						else
-							$error = 'Cannot upload file type';
+						mysql_query("INSERT INTO message (user_name, chat_message, image, user_ip, time_sent) VALUES ('$user_name', '$chat_message', '$file_title', '$user_ip', '$time_sent')") or fatalError("Database error");
 					}
 					else
-						$error = 'File already exists';
+						$error = 'Cannot upload file type';
 				}
+				else
+					$error = 'File already exists';
 			}
-			else if($chat_message)
+		}
+		else 
+			if($chat_message)
 				mysql_query("INSERT INTO message (user_name, chat_message, user_ip, time_sent) VALUES ('$user_name', '$chat_message', '$user_ip', '$time_sent')") or fatalError("Database error");
 			else
 				$error = 'You must post something';
@@ -112,5 +117,7 @@ else
 	$error = "Your session has expired, please refresh the page";
 
 if($error != "")
-	fatalError($error);
+	
+	
+echo "Done.";
 ?>

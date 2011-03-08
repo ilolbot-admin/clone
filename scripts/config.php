@@ -9,5 +9,5 @@ $mysql_password = "";
 $mysql_database = "clonedb";
 
 //etc
-$captcha = true;//buggy, do not use.
+$captcha = false;//buggy, do not use.
 ?>
